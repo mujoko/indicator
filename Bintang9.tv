@@ -1,0 +1,95 @@
+study("NDeX-Bintang 9",overlay=true)
+
+// Input ----->> Bintang Sembilan 
+transp=input(0)
+Numbers=input(true)
+SR=input(true)
+Barcolor=input(true)
+TD = close > close[4] ?nz(TD[1])+1:0
+TS = close < close[4] ?nz(TS[1])+1:0
+
+TDUp = TD - valuewhen(TD < TD[1], TD , 1 )
+TDDn = TS - valuewhen(TS < TS[1], TS , 1 )
+plotshape(Numbers?(TDUp==1?true:na):na,style=shape.circle,color=lime,location=location.abovebar,transp=00)
+plotshape(Numbers?(TDUp==2?true:na):na,style=shape.circle,color=green,location=location.abovebar,transp=30)
+plotshape(Numbers?(TDUp==3?true:na):na,style=shape.circle,color=green,location=location.abovebar,transp=40)
+plotshape(Numbers?(TDUp==4?true:na):na,style=shape.circle,color=green,location=location.abovebar,transp=50)
+plotshape(Numbers?(TDUp==5?true:na):na,style=shape.circle,color=green,location=location.abovebar,transp=10)
+plotshape(Numbers?(TDUp==6?true:na):na,style=shape.circle,color=green,location=location.abovebar,transp=30)
+plotshape(Numbers?(TDUp==7?true:na):na,style=shape.circle,color=green,location=location.abovebar,transp=40)
+plotshape(Numbers?(TDUp==8?true:na):na,style=shape.circle,color=green,location=location.abovebar,transp=50)
+plotchar(Numbers?(TDUp==9?true:na):na,text="★",char='9',color=#f0d517,location=location.abovebar,transp=00)
+
+plotshape(TDDn==1?true:na,style=shape.circle,color=red,location=location.belowbar,transp=00)
+plotshape(TDDn==2?true:na,style=shape.circle,color=#d9510a,location=location.belowbar,transp=80)
+plotshape(TDDn==3?true:na,style=shape.circle,color=#d9510a,location=location.belowbar,transp=80)
+plotshape(TDDn==4?true:na,style=shape.circle,color=#d9510a,location=location.belowbar,transp=80)
+plotshape(TDDn==5?true:na,style=shape.circle,color=#d9510a,location=location.belowbar,transp=80)
+plotshape(TDDn==6?true:na,style=shape.circle,color=#d9510a,location=location.belowbar,transp=80)
+plotshape(TDDn==7?true:na,style=shape.circle,color=#d9510a,location=location.belowbar,transp=80)
+plotshape(TDDn==8?true:na,style=shape.circle,color=#d9510a,location=location.belowbar,transp=80)
+plotshape(TDDn==9?true:na,style=shape.circle,text="🔥",color=red,location=location.belowbar,transp=00)
+
+// Sell Setup ----->> Bintang Sembilan 
+priceflip = barssince(close<close[4])
+sellsetup = close>close[4] and priceflip
+sell = sellsetup and barssince(priceflip!=9)
+sellovershoot = sellsetup and barssince(priceflip!=13)
+sellovershoot1 = sellsetup and barssince(priceflip!=14)
+sellovershoot2 = sellsetup and barssince(priceflip!=15)
+sellovershoot3 = sellsetup and barssince(priceflip!=16)
+
+// Buy setup ----->> Bintang Sembilan 
+priceflip1 = barssince(close>close[4])
+buysetup = close<close[4] and priceflip1
+buy = buysetup and barssince(priceflip1!=9)
+buyovershoot = barssince(priceflip1!=13) and buysetup
+buyovershoot1 = barssince(priceflip1!=14) and buysetup
+buyovershoot2 = barssince(priceflip1!=15) and buysetup
+buyovershoot3 = barssince(priceflip1!=16) and buysetup
+
+// TD lines ----->> Bintang Sembilan 
+TDbuyh = valuewhen(buy,high,0)
+TDbuyl = valuewhen(buy,low,0)
+TDsellh = valuewhen(sell,high,0)
+TDselll = valuewhen(sell,low,0)
+
+plot(SR?(TDbuyh ? TDbuyl: na):na,style=circles, linewidth=1, color=red)
+plot(SR?(TDselll ? TDsellh : na):na,style=circles, linewidth=1, color=lime)
+barcolor(Barcolor?(sell? #FF0000 : buy? #00FF00 : sellovershoot? #FF66A3 : sellovershoot1? #FF3385 : sellovershoot2? #FF0066 : sellovershoot3? #CC0052 : buyovershoot? #D6FF5C : buyovershoot1? #D1FF47 : buyovershoot2? #B8E62E : buyovershoot3? #8FB224 : na):na)
+
+// EMA Optional Entry  ----->> Bintang Sembilan 
+len1 = input(5, minval=1, title="EMA #1")
+src1 = input(close, title="EMA Source #1")
+out1 = ema(src1, len1)
+len2 = input(10, minval=1, title="EMA #2")
+src2 = input(close, title="EMA Source #2")
+out2 = ema(src2, len2)
+len3 = input(20, minval=1, title="EMA #3")
+src3 = input(close, title="EMA Source #3")
+out3 = ema(src3, len3)
+
+// SMA Trend Line  ----->> Bintang Sembilan 
+len4 = input(20, minval=1, title="SMA #4")
+src4 = input(close, title="SMA Source #4")
+out4 = sma(src4, len4)
+
+len5 = input(50, minval=1, title="SMA #5")
+src5 = input(close, title="SMA Source #5")
+out5 = sma(src5, len5)
+
+len6 = input(200, minval=1, title="SMA #6")
+src6 = input(close, title="SMA Source #6")
+out6 = sma(src6, len6)
+
+a = plot(out1, linewidth=5, title="EMA #1", color=close >= out1 ? blue : red)
+b = plot(out2, linewidth=2, title="EMA #2", color=close >= out2 ? yellow : red, transp=80)
+c = plot(out3, linewidth=2, title="EMA #3", color=close >= out3 ? green : #f2375a,transp=80)
+d = plot(out4, linewidth=4, title="SMA #4", color=close >= out4 ? lime : red, transp=60)
+fill(a, b, color=out1>out2? yellow:red, transp=70, title="Fill")
+fill(b, c, color=out2>out3? #d7e927:red, transp=80, title="Fill")
+fill(c, d, color=out3>out4? lime:red, transp=80, title="Fill")
+
+a1 = plot(out5, linewidth=8, title="SMA #5", color=close >= out5 ? lime : red, transp=90)
+a2 = plot(out6, linewidth=10, title="SMA #6", color=close >= out6 ? lime : red, transp=90) 
+fill(a1, a2, color=out5>out6? fuchsia:red, transp=90, title="Fill")
