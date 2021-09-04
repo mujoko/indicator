@@ -1,0 +1,55 @@
+//@version=4
+study(title="Sto RSI by NDeX", format=format.price, precision=2, resolution="")
+smoothK = input(3, "K", minval=1)
+smoothD = input(4, "D", minval=1)
+lengthRSI = input(14, "RSI Length", minval=1)
+lengthStoch = input(14, "Stochastic Length", minval=1)
+src = input(close, title="RSI Source")
+rsi1 = rsi(src, lengthRSI)
+k = sma(stoch(rsi1, rsi1, rsi1, lengthStoch), smoothK)
+d = sma(k, smoothD)
+
+col_rsi1 = k - k[1] >0 ? #17ff03 : #ff0000
+
+Cross1 = crossover(k, d) ? #17ff03 : na
+Cross2 = crossunder(k, d) ? #ff0000 : na
+bgcolor(Cross1, title="Cross Over")
+bgcolor(Cross2, title="Cross Under")
+
+zero = rsi1 - rsi1
+fifty = zero + 50
+hundred = zero + 100
+
+plot(zero, title="Zero", color=#d1d4dc, linewidth=1, transp= 0, offset=1)
+plot(fifty, title="Fifty", color=#d1d4dc, linewidth=1, transp= 30, offset=1)
+plot(hundred, title="Hundred", color=#d1d4dc, linewidth=1, transp= 0, offset=1)
+
+band10 = zero + 10
+band90 = zero + 90
+band20 = zero + 20
+band80 = zero + 80
+band30 = zero + 30
+band70 = zero + 70
+band40 = zero + 40
+band60 = zero + 60
+
+band_10 = plot(band10, title="10 Band", color=#ffe500, linewidth=1, style=plot.style_cross, transp= 100, offset=1)
+band_90 = plot(band90, title="90 Band", color=#ffe500, linewidth=1, style=plot.style_cross, transp= 100, offset=1)
+band_20 = plot(band20, title="20 Band", color=#9915FF, linewidth=1, style=plot.style_line, transp= 100, offset=1)
+band_80 = plot(band80, title="80 Band", color=#9915FF, linewidth=1, style=plot.style_line, transp= 100, offset=1)
+band_30 = plot(band30, title="30 Band", color=#ff9800, linewidth=1, style=plot.style_cross, transp= 100, offset=1)
+band_70 = plot(band70, title="70 Band", color=#ff9800, linewidth=1, style=plot.style_cross, transp= 100, offset=1)
+band_40 = plot(band40, title="40 Band", color=#d1d4dc, linewidth=1, style=plot.style_cross, transp= 100, offset=1)
+band_60 = plot(band60, title="60 Band", color=#d1d4dc, linewidth=1, style=plot.style_cross, transp= 100, offset=1)
+
+
+fill(band_10, band_90, color=#9915FF, transp=95, title="10/90 Fill")
+fill(band_20, band_80, color=#9915FF, transp=95, title="20/80 Fill")
+fill(band_30, band_70, color=#9915FF, transp=95, title="30/70 Fill")
+fill(band_40, band_60, color=#9915FF, transp=95, title="40/60 Fill")
+
+FilCol = k>d ? #17ff03 : #ff0000
+
+F2= plot(d, "D", color= #0300ff, linewidth=2, transp= 0)
+F1= plot(k, "K", color=col_rsi1, linewidth=2, transp= 0)
+fill(F1, F2, title="Fill", color=FilCol, transp=80)
